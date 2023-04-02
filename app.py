@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import pandas as pd
 import matplotlib.pyplot as plt 
-
+from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 app.config['SESSION_TYPE'] = 'memcached'
 app.secret_key = "super secret key"
@@ -34,8 +34,8 @@ def loginAuth():
        usernameAuth = str(request.form.get("username"))  
        session['username'] = usernameAuth
        passwordAuth = str(request.form.get("password"))
-       data = Authorization.query.filter_by(username=usernameAuth, password=passwordAuth).first()
-       if data is not None:
+       data = Authorization.query.filter_by(username=usernameAuth).first()       
+       if data is not None or check_password_hash(user.password, passwordAuth):
             allExpense = Expense.query.filter_by(username=usernameAuth).all()
             # return redirect(url_for('add_expense',usernameAuth,data.totalExpense,data.balance))
             user = usernameAuth
@@ -83,7 +83,8 @@ def signUP():
         if data is not None:
             error = "Username already exists!"
             return render_template('signUp.html', error=error)
-        auth = Authorization(username=uname, password=passw,totalExpense=0,balance=0)
+        auth = Authorization(username=uname, password=generate_password_hash(
+                passw, method='sha256'),totalExpense=0,balance=0)
         db.session.add(auth)
         db.session.commit()  
         return redirect(url_for('loginAuth'))
