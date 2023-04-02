@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% block title %} Home{% endblock title %} 
+{% block body %}
+
+<style>
+  .divi{
+  display: flex;
+  justify-content: space-around;
+  }
+  .total-expenses {
+			background-color: #e92a3a;
+			padding: 16px;
+			border-radius: 16px;
+			box-shadow: 0 0 10px rgba(155, 221, 135, 0.2);
+			font-size: 18px;
+			font-weight: 500;
+			text-align: center;
+		}
+    .Balance {
+			background-color: #78e889;
+			padding: 16px;
+			border-radius: 16px;
+			box-shadow: 0 0 10px rgba(155, 221, 135, 0.2);
+			font-size: 18px;
+			font-weight: 500;
+			text-align: center;
+		}
+    .green-text {
+    color: green;
+    }
+
+    .red-text {
+        color: red;
+    }
+</style>    
+    <div class="container my-3">
+      <div class="divi">
+        <h3>Add a new Expense</h3>
+        <h4>
+          <div style=" margin: 1px;">
+            <span style="margin-right: 15px;" class="Balance">
+              Net-Balance: &#8377<span>{{ balance }}</span>
+            </span>
+            <span class="total-expenses" style="margin-left: 10px;">
+              Total Expenses: &#8377<span>{{ totalExpense }}</span>
+            </span>
+          </div>
+       </h4>
+    </div>
+  </div>  
+        <div class="container my-3">
+          <div class="divi">
+            <form action="{{ url_for('add_expense',user=username) }}" method="POST">
+              <div hidden>
+                <input type="text" class="form-control" name="username" value="{{username}}" id="username"> 
+              </div>
+                <div style="width: 45vh;" class="mb-3">
+                  <label for="title" class="form-label ">Enter your expense</label>
+                  <input type="number" class="form-control input-sm" size="4" name="expense" id="expense" aria-describedby="emailHelp" placeholder="&#8377 0 " required> 
+                </div>
+                <div style="width: 45vh; " class="mb-3">
+                    <label for="desc" class="form-label">Category </label>
+                    <div style="display: flex;">
+                      <input type="text" style="padding-right: 0.4cm;" class="form-control" size= "20" name="category" id="category" placeholder="Enter Category" required> 
+                      <span style="margin-left: 0.3cm; width: 0.5cm;">
+                        <select id="select-category" style="width: 0.5cm;">
+                          <option value="">Choose Category</option>
+                          <option value="Food">Food</option>
+                          <option value="Mobile Recharge">Mobile Recharge</option>
+                          <option value="Travel">Travel</option>
+                          <option value="HealthCare">HealthCare</option> 
+                          <option value="Entertainment">Entertainment</option> 
+                          <option value="Electricity">Electricity</option> 
+                          <option value="Water">Water</option> 
+                          <option value="Home-Rent">Home-Rent</option> 
+                          <option value="Other">Other</option> 
+                      </span>
+                    </div>
+                    </select>
+                </div>
+                <center><button style="margin-top: 0.4cm; background-color: rgb(34, 176, 34);" type="submit" class="btn btn-dark ">Submit</button></center>
+                </form> 
+          </div>
+          <div>
+            <form action="{{ url_for('add_money') }}" method="post">
+              <div style="width: 45vh;" class="mb-3">
+                <div hidden>
+                  <input type="text" class="form-control" name="user" value="{{username}}" id="user"> 
+                </div>
+                <label for="title" class="form-label ">Add your money/salary</label>
+                <input type="number" class="form-control input-sm" size="4" name="money" id="money" aria-describedby="emailHelp" placeholder="&#8377 0 " required> 
+              </div>
+              <div style="width: 45vh; " class="mb-3">
+                <label for="desc" class="form-label">Description </label>
+                <div style="display: flex;">
+                  <input type="text" style="padding-right: 0.4cm;" class="form-control" size= "20" name="Description" id="category-money" placeholder="Enter Description" required> 
+                </div>
+                </select>
+            </div>
+              <center><button style="margin-top: 0.4cm; background-color: rgb(34, 176, 34);" type="submit" class="btn btn-dark ">Add</button></center>
+            </form>
+        </div>
+      </div>    
+        
+    <div class="container my-3">
+                {% if allExpense|length == 0 %}
+                   
+                <div class="alert alert-dark" role="alert">
+                    You Have Not Done any expenses yet!
+                  </div>
+                    {% else %} 
+                    <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">SNo</th>
+                            <th scope="col">Expense</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Delete-Expense</th>
+                            <th scope="col">Update-Expense</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+              {% for expense in allExpense|reverse %}
+              <tr>
+                <th scope="row">{{loop.index}}</th>
+                {% if expense.type =="1" %}
+                <td style="color: green; font-weight: bold;"> + &#8377 {{expense.amount}}</td>
+                {% elif expense.type =="0" %}
+                <td style="color: red; font-weight: bold;"> - &#8377 {{expense.amount}}</td>
+                {% endif %}
+                <td>{{expense.category}}</td>
+                <td> {{expense.date_created}}</td>
+                <td>
+                <a href="/delete/{{expense.id}}" type="button" class="btn btn-outline-dark btn-sm mx-1">Delete</button>
+                </td>
+                <td>
+                  <a href="/update/{{expense.id}}" type="button" class="btn btn-outline-dark btn-sm mx-1">Update</button>
+                </td>
+              </tr>
+              
+              {% endfor %}
+            </tbody>
+            </table>
+              {% endif %}         
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+        crossorigin="anonymous"></script>
+    <script>
+        const selectCategory1 = document.getElementById("select-category");
+        selectCategory1.addEventListener("change", (event) => {
+        const selectedC1 = event.target.value;
+        document.getElementById("category").value = selectedC1 
+      });
+        const selectCategory2 = document.getElementById("select-money");
+        selectCategory2.addEventListener("change", (event) => {
+        const selectedC = event.target.value;
+        document.getElementById("category-money").value = selectedC 
+      });  
+    </script>    
+{% endblock body %}

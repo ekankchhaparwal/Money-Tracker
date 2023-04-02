@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In Form</title>
+    <link rel="stylesheet" href="{{ url_for('static' ,filename = 'style.css') }}">
+   
+</head>
+<body style="background-color: rgb(221, 221, 199);"> 
+    {% if error %}  
+    <script type="text/javascript" language="JavaScript">
+        alert("Invalid Credentials");
+     </script> 
+    {% endif %}  
+    <div class="wrapper login">
+        <!-- <img src="{{ url_for('static' ,filename = 'logo.PNG') }}" alt="Error Loading Image" style="float:left;width:320px;height:320px;"> -->
+        <div class="container">
+            <div class="col-left">
+                <div class="login-text">
+                    <h2>Welcome!</h2>
+                    <p>Create your account.<br>For Free!</p>
+                    <a href="/signUP" class="btn">Sign Up</a>
+                </div>
+            </div>
+
+            <div class="col-right">
+                <div class="login-form">
+                    <h2>Login</h2>
+                    <form action="{{ url_for('loginAuth') }}" method="POST">
+                        <p>
+                            <label>Username/Email address<span>*</span></label>
+                            <input type="text" name="username" placeholder="Username or Email" required>
+                        </p>
+                        <p>
+                            <label>Password<span>*</span></label>
+                            <input type="password" name="password" placeholder="Password" required>
+                        </p>
+                        <p>
+                            <input type="submit" value="Sign In">
+                        </p>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>
